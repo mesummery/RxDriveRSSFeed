@@ -8,22 +8,26 @@
 
 // Frameworks
 import UIKit
+
 import RxSwift
 
 /// RSS List Controller
-class ListController: UIViewController, UITableViewDelegate {
+final class ListController: UIViewController, UITableViewDelegate {
   
     /// Table View
-    @IBOutlet private weak var tableView: ListTable!
-    
+    @IBOutlet final private weak var tableView: ListTable!
+
+    /// Error View
+    @IBOutlet final private weak var errorView: UIView!
+
     /// Pull To Refresh
-    private let refresh = UIRefreshControl()
+    final private let refresh = UIRefreshControl()
     
     /// View Model
-    private let viewModel = ListViewModel()
+    final private let viewModel = ListViewModel()
 
     /// Rx破棄用Dispose
-    private let disposeBag = DisposeBag()
+    final private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +49,7 @@ class ListController: UIViewController, UITableViewDelegate {
     /**
     View Model Setting
     */
-    func setupViewModel() {
+    final func setupViewModel() {
         tableView.dataSource = viewModel
         // Load
         viewModel.reloadData()
@@ -54,37 +58,37 @@ class ListController: UIViewController, UITableViewDelegate {
     /**
      RX bind
      */
-    func bind() {
-        // Connection
-        viewModel.entries.asObservable().filter { x in
-            // 初期化の際にsubscribeをさけるためfilter
-            // 配列の要素数が0件より多くなったときにsubscribeを実施
-            return !x.isEmpty
-            }.subscribe(onNext: { [unowned self] x in
-                // 更新
-                self.refresh.endRefreshing()
-                self.tableView.reloadData()
-                }, onError: { error in
-                    // エラー
-                    // FIXME: いつかやるかも
-                }, onCompleted: { () in
-                    // 完了
-                }) { () in
-                    
-            }.addDisposableTo(disposeBag)
+    final func bind() {
         
+        // TableView Reload
+        viewModel.dataUpdated
+            .driveNext { [unowned self] in
+                self.viewModel.entries = $0
+                self.tableView.reloadData()
+            }
+            .addDisposableTo(disposeBag)
+
+        // Loading Status
+        viewModel.isLoading
+            .drive(refresh.rx_refreshing)
+            .addDisposableTo(disposeBag)
+        
+        // Error View 
+        viewModel.isError
+            .map { !$0 }
+            .drive(errorView.rx_hidden)
+            .addDisposableTo(disposeBag)
 
         // Pull Refresh
-        refresh.rx_controlEvent(.ValueChanged).subscribeNext { [unowned self] x -> Void in
-            // プルリフレッシュを購読
-            self.viewModel.reloadData()
+        refresh.rx_controlEvent(.ValueChanged)
+            .subscribeNext { [unowned self] _ in self.viewModel.reloadData()
         }.addDisposableTo(disposeBag)
     }
     
     /**
     Pull To Refresh Setting
     */
-    private func setupPullRefresh() {
+    final private func setupPullRefresh() {
         refresh.tintColor = UIColor.whiteColor()
         tableView.addSubview(refresh)
     }
@@ -93,7 +97,7 @@ class ListController: UIViewController, UITableViewDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let navigationController = segue.destinationViewController as! UINavigationController
         let controller = navigationController.visibleViewController as! DetailController
-        controller.url = (viewModel.entries.value[(tableView.indexPathForSelectedRow?.row)!].link)
+        controller.url = (viewModel.entries[(tableView.indexPathForSelectedRow?.row)!].link)
    }
     
     /**
@@ -101,7 +105,7 @@ class ListController: UIViewController, UITableViewDelegate {
     
     - parameter segue: segue
     */
-    @IBAction func unwindFromDetail(segue: UIStoryboardSegue) {
+    @IBAction final func unwindFromDetail(segue: UIStoryboardSegue) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
 }

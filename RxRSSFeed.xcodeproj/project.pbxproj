@@ -32,6 +32,7 @@
 		773319411C3A98BB003D8D9C /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773319241C3A98BB003D8D9C /* ListViewModel.swift */; };
 		773319461C3A99C3003D8D9C /* RxRSSFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773319271C3A98BB003D8D9C /* RxRSSFeedTests.swift */; };
 		773319471C3A99CD003D8D9C /* RxRSSFeedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7733192A1C3A98BB003D8D9C /* RxRSSFeedUITests.swift */; };
+		B521032F1CAD7DDA004959FD /* ListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B521032E1CAD7DDA004959FD /* ListModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		773319271C3A98BB003D8D9C /* RxRSSFeedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxRSSFeedTests.swift; sourceTree = "<group>"; };
 		773319291C3A98BB003D8D9C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7733192A1C3A98BB003D8D9C /* RxRSSFeedUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxRSSFeedUITests.swift; sourceTree = "<group>"; };
+		B521032E1CAD7DDA004959FD /* ListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				773319021C3A98BB003D8D9C /* Network */,
+				B521032E1CAD7DDA004959FD /* ListModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -548,6 +551,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				773319331C3A98BB003D8D9C /* RequestBase.swift in Sources */,
+				B521032F1CAD7DDA004959FD /* ListModel.swift in Sources */,
 				773319351C3A98BB003D8D9C /* Feed.swift in Sources */,
 				7733192B1C3A98BB003D8D9C /* AppDelegate.swift in Sources */,
 				773319371C3A98BB003D8D9C /* ResponseBase.swift in Sources */,

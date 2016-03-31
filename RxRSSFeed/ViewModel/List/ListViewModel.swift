@@ -8,53 +8,64 @@
 
 // Frameworks
 import UIKit
+
 import RxSwift
 
+import RxCocoa
+
 /// List View Model
-class ListViewModel: NSObject, UITableViewDataSource {
+final class ListViewModel: NSObject, UITableViewDataSource {
 
     /// Cell Identifier
-    private var cellIdentifier = "ListCell"
+    final private var cellIdentifier = "ListCell"
 
-    /// Request class
-    private var request = FeedRequest()
+    /// Request Model class
+    final private var model = ListModel()
+
+    /// Entries
+    final var entries = [Entry]()
     
-    /// Feed
-    private(set) var feed: Variable<Feed?> = Variable(nil)
-
-    /// Entry
-    private(set) var entries: Variable<[Entry]> = Variable([])
-
-    /// Error
-    private(set) var error: Variable<NSError?> = Variable(nil)
-
+    // Rx
+    /// Data Updated
+    final private(set) var dataUpdated: Driver<[Entry]> = Driver.never()
+    
+    /// Loading flg
+    final private(set) var isLoading: Driver<Bool> = Driver.never()
+    
+    /// Error flg
+    final private(set) var isError: Driver<Bool> = Driver.never()
+    
     override init() {
         super.init()
+        
+        bind()
+    }
+    
+    /**
+     Rx bind
+     */
+    final func bind() {
+        dataUpdated = model.entries.asObservable().asDriver(onErrorJustReturn: [])
+        isLoading = model.isLoading.asObservable().asDriver(onErrorJustReturn: false)
+        isError = model.error.asObservable().map { $0 != nil }.asDriver(onErrorJustReturn: false)
     }
     
     /**
     Reload
     */
     func reloadData() {
-        request.connect().subscribe(onNext: { [weak self] x in
-            self?.entries.value = x.feed.entries
-            }, onError: { error in
-                
-            }, onCompleted: { () in
-                
-            }) { () in
-                
-        }.addDisposableTo(request.disposeBag)
+        // API
+        model.request()
     }
     
     // MARK: - TableView
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return entries.value.count
+        return entries.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(self.cellIdentifier, forIndexPath: indexPath) as! ListCell
-        cell.configureCell(entity: entries.value[indexPath.row])
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! ListCell
+        cell.configureCell(entity: entries[indexPath.row])
         return cell
     }
 }
