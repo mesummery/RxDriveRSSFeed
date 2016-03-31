@@ -32,28 +32,30 @@ class RequestBase: NSObject {
     /**
      リクエスト生成
      
-     - parameter method:     APIメソッド
      - parameter host:       hostname
      - parameter path:       path
+     - parameter method:     mothod
      - parameter parameters: param
      - parameter encoding:   encode
      - parameter headers:    header
      */
-    func createRequest(
-        method method: Method,
-        host: String,
-        path: String,
-        parameters: [String: AnyObject]?,
-        encoding: ParameterEncoding,
-        headers: [String: String]?) {
-            
-        request = manager.request(
+    final func createRequest(
+        hostName hostName: String,
+                 path: String,
+                 method: Method,
+                 parameters: [String: AnyObject]?,
+                 encording: ParameterEncoding,
+                 headers: [String: String]?) -> Request? {
+        
+        request = self.manager.request(
             Alamofire.Method(rawValue: method.rawValue)!,
-            host + path,
+            hostName + path,
             parameters: parameters,
-            encoding: encoding,
-            headers: headers
-            )
+            encoding: encording,
+            headers: headers)
+            .validate()
+        
+        return request
     }
     
     /**
