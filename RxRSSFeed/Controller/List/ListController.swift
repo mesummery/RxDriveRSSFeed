@@ -11,6 +11,8 @@ import UIKit
 
 import RxSwift
 
+import RxCocoa
+
 /// RSS List Controller
 final class ListController: UIViewController, UITableViewDelegate {
   
@@ -73,7 +75,7 @@ final class ListController: UIViewController, UITableViewDelegate {
             .drive(refresh.rx_refreshing)
             .addDisposableTo(disposeBag)
         
-        // Error View 
+        // Error View
         viewModel.isError
             .map { !$0 }
             .drive(errorView.rx_hidden)

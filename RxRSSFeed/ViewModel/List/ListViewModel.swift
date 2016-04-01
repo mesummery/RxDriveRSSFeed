@@ -37,14 +37,7 @@ final class ListViewModel: NSObject, UITableViewDataSource {
     
     override init() {
         super.init()
-        
-        bind()
-    }
-    
-    /**
-     Rx bind
-     */
-    final func bind() {
+
         dataUpdated = model.entries.asObservable().asDriver(onErrorJustReturn: [])
         isLoading = model.isLoading.asObservable().asDriver(onErrorJustReturn: false)
         isError = model.error.asObservable().map { $0 != nil }.asDriver(onErrorJustReturn: false)
