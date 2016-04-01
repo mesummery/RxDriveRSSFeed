@@ -5,8 +5,8 @@ Simple RSSFeed App with RxSwift!
 # Ver.
 |       |  Ver.  |
 |:------|-------:|
-| Xcode |  7.2   |
-| Swift |  2.1   |
+| Xcode |  7.3   |
+| Swift |  2.2   |
 | iOS   |  8.0 - |
 
 # License
