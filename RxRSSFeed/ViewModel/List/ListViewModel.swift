@@ -40,7 +40,8 @@ final class ListViewModel: NSObject, UITableViewDataSource {
 
         dataUpdated = Driver
             .combineLatest(model.entries.asDriver(),
-                           model.error.asDriver().map { $0 != nil }, resultSelector: { ($1) ? [] : $0 })
+                           model.error.asDriver().map { $0 != nil },
+                           resultSelector: { ($1) ? [] : $0 })
         isLoading = model.isLoading.asDriver()
         isError = model.error.asDriver().map { $0 != nil }
     }
