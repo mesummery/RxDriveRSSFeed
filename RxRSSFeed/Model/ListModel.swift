@@ -30,11 +30,15 @@ final class ListModel: NSObject {
             return
         }
         isLoading.value = true
+        error.value = nil
+        
         let request = FeedRequest()
         request.connect()
             .subscribe(
                 onNext: { [weak self] in self?.entries.value = $0.feed.entries },
-                onError: { [weak self] in self?.error.value = $0 },
+                onError: { [weak self] in
+                    self?.error.value = $0
+                    self?.isLoading.value = false },
                 onCompleted: { [weak self] in self?.isLoading.value = false }
             )
         .addDisposableTo(disposeBag)
