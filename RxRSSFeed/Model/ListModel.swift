@@ -34,6 +34,7 @@ final class ListModel: NSObject {
         
         let request = FeedRequest()
         request.connect()
+            .subscribeOn(SerialDispatchQueueScheduler(globalConcurrentQueueQOS: .Background))
             .subscribe(
                 onNext: { [weak self] in self?.entries.value = $0.feed.entries },
                 onError: { [weak self] in
